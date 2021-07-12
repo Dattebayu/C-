@@ -1,0 +1,193 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+ 
+using namespace std;
+ 
+ 
+// Создание структуру, с нужными полями
+struct List {
+    char taxiNumber[30];
+    char carModel[30];
+    char FIO[40];
+    char position[30];
+};
+ 
+struct STR {
+    List *node; // Посредствам структуру List
+    STR *next; // Указатель на следующий элемент
+};
+
+STR *head = NULL; // Голова списка, самый начальный элемент 
+// Функция создания элемента списка 
+STR *createKarta(List *node) { // Передаем через функцию addKarta node с данными
+    STR *data = new STR; // Создаем 
+    data->node = node;
+    data->next = NULL;
+    head = data;
+    return data;
+}
+ 
+ 
+// Функция добавления элемента списка 
+void addElementKarta(List *node, STR *data) {
+    while(data->next != NULL) {
+        data = data->next; // Перебераем все элементы списка, пока не найдем последний
+    }
+    data->next=new STR; // Создаем новую структуру 
+    data->next->node=node; // Заносим в нее данные 
+    data->next->next=NULL; // Задаем указатель на след элемент, так как он будет последнйи, то он равняется NULL
+}
+ 
+// Функция вывода элементов списка  
+void printElementKarta(STR *data) { // Передаем данные о нашем списке
+    while(data != NULL) { // Простой перебор всех элементов пока не дойдем до последнего
+        cout<<"\nНомер такси: "<<data->node->taxiNumber;
+        cout<<"\nМарка автомобиля: "<<data->node->carModel;
+        cout<<"\nФамилия и инициалы водителя: "<<data->node->FIO;
+        cout<<"\nПризнак того, где находится такси — на вызове или в свободное: "<<data->node->position<<"\n";
+        data = data->next; // Переход на следующий элемент
+    }
+
+}
+
+// Функция добавление элемента списка 
+List *addKarta() {
+    cout<<"Данные о такси:\n";
+    List *node = new List; // Создает по средству структуры List данные, в которые мы заносим введенные переменные
+    cout<<"Введите номер такси:";
+    cin>>node->taxiNumber;
+    cout<<"Введите марка автомобиля:";
+    cin>>node->carModel;
+    cout<<"Введите фамилию и инициалы водителя:";
+    cin>>node->FIO;
+    cout<<"Введите признак того, где находится такси — на вызове или в свободное:";
+    cin>>node->position;
+    return node; // Возвращаем данные
+}
+ 
+int choice() {
+    int answer;
+    
+    cout<<"МЕНЮ"<<"\n";
+    cout<<"1. Начальное формирование данных о такси\n";
+    cout<<"2. Добавление элемента списка в конец\n";
+    cout<<"3. Найти и удалить\n";
+    cout<<"4. Очистить список\n";
+    cout<<"5. Вывод всего списка\n";
+    cout<<"6. Выход\n";
+    cout<<"Введите свой выбор: ";
+    cin>>answer;
+    cout<<"--------------"<<"\n";
+    
+    if (answer >= 1 && answer <= 6)
+        return answer;
+    else
+        return 0;
+}
+ 
+STR *deleteElementKarta(STR *str) {
+    STR *last = str, *data = str;
+    char kolRooms[30]; // Переменная для сравнения номера такси
+    
+    cout<<"Введите номер такси: \n";
+    cin>>kolRooms;
+    
+    while (data) {
+        if (!strcmp(kolRooms, data->node->taxiNumber)) { // Сравниванием номер введенного такси с нашей структурой
+            {
+                data->node = NULL; // У этого элемента сразу очищаем данные 
+                if(last == data) { 
+                    str = data->next; // Сохраняем данные о следующем элементе
+                } else {
+                    last->next = data->next; // Заносим в last новый элемент, для дальнейшего сравнения
+                }    
+                delete data; // Удаляем из памяти структуру
+                last = data; // Заносим в last, следующий элемент после удаленного
+                data = data->next; // И в дату эелмент после него, чтобы продолжить проверку 
+            }
+        }
+        else if (strcmp(kolRooms, data->node->taxiNumber))
+            data = data->next; // Переходим на следующий
+    }
+ 
+    cout<<"Запись удалена\n";
+    return str;
+}
+ 
+int main() {
+    STR *data = NULL; // Создаем структуру
+    int returnChoice; // Переменная для выбора 
+    int exitProgramm = 0;    
+    int n; 
+    
+    while(exitProgramm == 0) {
+        returnChoice = choice();
+        
+        if(returnChoice == 1) {
+            cout<<"Сколько такси хотите добавить: ";
+            cin>> n;
+            cout<<"--------------"<<endl;
+            
+            for(int i = 0; i < n; i++) {
+                if(data == NULL) {
+                    data = createKarta(addKarta());                    
+                }
+                else {
+                    addElementKarta(addKarta(), data);
+                }
+                cout<<"--------------\n";
+            }
+        }
+        
+        else if(returnChoice == 2) {
+            cout<<"\n";
+            if(data == NULL)
+                data = createKarta(addKarta());
+            else
+                addElementKarta(addKarta(), data);
+            cout<<"--------------\n";
+        }
+        
+        else if(returnChoice == 3)
+        {
+            data = deleteElementKarta(data);
+            cout<<"--------------\n";
+        }
+ 
+        else if(returnChoice == 4)
+        {
+            char foo;
+            cout<<"Вы хотите удалить все записи? (y/n) \n"; // Удаление всех записей
+            cin>>foo;
+            if(foo == 'y')
+            {
+                data = NULL; // Удаляет в программе
+                cout<<"Все записи удалены!\n";
+                delete data; // Удаляет в памяте
+            }
+            cout<<"\n";
+            cout<<"--------------\n";
+            
+        }
+ 
+        else if(returnChoice == 5) // Отображение всех записей
+        {
+            printElementKarta(data);
+            cout<<"--------------\n";
+ 
+        }
+        else if (returnChoice == 6) { // Выход
+            exitProgramm = 1;
+        }
+ 
+        else if(returnChoice < 1 || returnChoice > 6)
+        {
+            cout<<"Ваш выбор не соответствует пунктам меню!\n";
+            cout<<"--------------\n";
+        }
+        
+    }
+    return 0;
+}

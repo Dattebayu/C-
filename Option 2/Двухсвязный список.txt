@@ -1,0 +1,194 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+ 
+using namespace std;
+ 
+ 
+ 
+struct Karta {
+    char numberRooms[30];
+    char numberFloor[30];
+    char plaint[40];
+    char address[30];
+};
+ 
+struct STR {
+    Karta *node;
+    STR *next;
+    STR *prev;
+};
+ 
+STR *head = NULL;
+STR *tail = NULL; 
+ 
+STR * createKarta(Karta * node) {
+    STR *data = new STR;
+    data->node = node;
+    data->next = NULL;
+    data->prev = NULL;
+    
+    head = data; 
+    tail = data;
+    return data;
+}
+ 
+ 
+ 
+void addElementKarta(Karta *node, STR* data) {
+    while(data->next)
+        data = data->next;
+    data->next=new STR;
+    data->next->node=node;
+    data->next->next=NULL;
+    data->next->prev = tail;
+    tail = data->next;
+}
+ 
+void printElementKarta(STR *data) {
+    while(data) {
+        cout<<"\nКоличество комнат: "<<data->node->numberRooms;
+        cout<<"\nЭтаж: "<<data->node->numberFloor;
+        cout<<"\nПлощадь: "<<data->node->plaint;
+        cout<<"\nАдрес: "<<data->node->address<<"\n";
+        data = data->next;
+    }
+}
+
+Karta * addKarta() {
+    cout<<"Данные о карте:\n";
+    Karta *node = new Karta;
+    
+    cout<<"Введите Количество комнат:";
+    cin>>node->numberRooms;
+ 
+    cout<<"Введите Этаж:";
+    cin>>node->numberFloor;
+ 
+    cout<<"Введите Площадь:";
+    cin>>node->plaint;
+ 
+    cout<<"Введите Адрес:";
+    cin>>node->address;
+ 
+    return node;
+}
+ 
+int choice() {
+    int answer;
+    
+    cout<<"МЕНЮ"<<"\n";
+    cout<<"1 - Начальное формирование картотеки\n";
+    cout<<"2 - Ввод заявки на обмене\n";
+    cout<<"3 - Найти и удалить\n";
+    cout<<"4 - Очистить список\n";
+    cout<<"5 - Вывод всего списка\n";
+    cout<<"6 - Выход\n";
+    cout<<"Введите свой выбор: ";
+    cin>>answer;
+    cout<<"--------------"<<"\n";
+    
+    if (answer >= 1 && answer <= 6)
+        return answer;
+    else
+        return 0;
+}
+ 
+STR* deleteElementKarta(STR * str) {
+    STR *last = str, *data = str;
+    char kolRooms[30];
+    
+    cout<<"Введите Количество комнат: \n";
+    cin>>kolRooms;
+    
+    while (data) {
+        if (!strcmp(kolRooms, data->node->numberRooms)) {
+            {
+                data->node = NULL;
+                if(last == data) str = data->next;
+                else last->next = data->next;
+                delete data;
+                last = data;
+                data = data->next;
+            }
+        }
+        else if (strcmp(kolRooms, data->node->numberRooms))
+            data = data->next;
+    }
+ 
+    cout<<"Запись удалена\n";
+    return str;
+}
+ 
+ 
+ 
+int main() {
+    STR *data = NULL;
+    bool StartToFinish = true;
+    int returnChoice;
+    bool exitChoice = true;
+    int n;
+    
+    while(exitChoice == true) {
+        returnChoice = choice();
+        
+        if(returnChoice == 1) {
+            cout<<"Сколько квартир хотите добавить: ";
+            cin>> n;
+            cout<<"--------------"<<endl;
+            
+            for(int i = 0; i < n; i++) {
+                if(data == NULL) {
+                    data = createKarta(addKarta());                    
+                }
+                else {
+                    addElementKarta(addKarta(), data);
+                }
+                cout<<"--------------\n";
+            }
+        }
+        
+        else if(returnChoice == 2) {
+            cout<<"\n";
+            if(data == NULL)
+                data = createKarta(addKarta());
+            else
+                addElementKarta(addKarta(), data);
+            cout<<"--------------\n";
+        }
+        
+        else if(returnChoice == 3)
+        {
+            data = deleteElementKarta(data);
+            cout<<"--------------\n";
+        }
+ 
+        else if(returnChoice == 4)
+        {
+            data = NULL;
+            cout<<"Все записи удалены!\n";
+            delete data;
+        }
+ 
+        else if(returnChoice == 5)
+        {
+            printElementKarta(data);
+            cout<<"--------------\n";
+ 
+        }
+        
+        else if (returnChoice == 6) {
+            exitChoice = false;
+        }
+ 
+        else if(returnChoice < 1 && returnChoice > 6)
+        {
+            cout<<"Ваш выбор не соответствует пунктам меню!\n";
+            cout<<"--------------\n";
+        }
+        
+    }
+    return 0;
+}
+ 

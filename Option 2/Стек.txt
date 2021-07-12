@@ -1,0 +1,108 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+
+// Создание данных стека
+typedef struct {
+    string text;
+    string help;
+} DATA;
+
+
+// Создание обьекта стека
+typedef struct tag_obj {
+    DATA d;
+    struct tag_obj* next;
+} OBJ;
+
+// Самый верхний обьект стека
+OBJ* head = NULL;
+
+// Добавление данных
+OBJ* push(DATA d) {
+    OBJ* ptr = new OBJ;
+    ptr->d = d;
+    ptr->next = head;
+    
+    head = ptr;
+    return ptr;
+}
+
+// Удаление данных
+
+void pop() {
+    if (head == NULL) return; // Если нету элементу, прекращает работу функции
+    OBJ* ptr = head->next;
+    
+    cout<<"Обьект "<<head->d.text<<"удален\n";
+    
+    delete head;
+    head = ptr;
+}
+
+void show() {
+    OBJ* c = head;
+    while (c != NULL) {
+        cout << c->d.text << " " << "\n";
+        c = c->next;
+    }
+}
+
+void showHelp(string textTermin) {
+    OBJ* c = head;
+    while (c != NULL) {
+        if (c->d.text == textTermin) {
+            cout << "Термин:  " << c->d.text << " Определение: " << c->d.help << "\n";
+        }
+        c = c->next;
+    }
+}
+
+void deleteTermin() {
+    OBJ* c = head;
+    cout << c->d.text << " - удален " << "\n";
+    head = c->next;
+    delete c;
+}
+
+int main() {
+    string strtext, strhelp;
+    int choose;
+    char answer;
+    bool end = true;
+    while (end) {
+        cout<<"Что вы хотите сделать?";
+        cout<<"\n 1. Ввеcти новый термин";
+        cout<<"\n 2. Удалить термин";
+        cout<<"\n 3. Отабризить все возможные термины";
+        cout<<"\n 4. Вывести по термину определние";
+        cout<<"\n 5. Выход";
+        cout<<"\n Выбрать: ";
+        cin>>choose;
+        if (choose == 1) {
+            cout<<"\nВведите термин (слово), которому хотите дать определение: ";
+            cin>>strtext;
+            cout<<"\nВведите определение к данному термину: ";
+            cin>>strhelp;
+            
+            DATA d = {strtext, strhelp};
+            push(d);
+        }
+        else if (choose == 2) {
+            deleteTermin();
+        }
+        else if (choose == 3) {
+            show();
+        }
+        else if (choose == 4) {
+            cout<<"Введите слово по которому хотите вывести определение: ";
+            cin>>strtext;
+            showHelp(strtext);
+        }
+        else if (choose == 5) {
+            end = false;
+        }
+    }
+
+    return 0;
+}

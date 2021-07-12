@@ -1,0 +1,23 @@
+#include<iostream>
+#include <cmath>
+ 
+using namespace std;
+ 
+float foo(int n, int x)
+{
+    
+    if(n == 1) return 0;
+    return ((cos(n) * x) / n * 2) + foo(n - 1, x);
+}
+ 
+int main()
+{
+    int n, x;     
+    cout << "Введите количество цивер: "; 
+    cin >> n;
+    cout << "Введите чему равно x: "; 
+    cin >> x;
+    cout << foo(n, x);
+    
+return 0;
+}

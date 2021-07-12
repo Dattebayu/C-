@@ -1,0 +1,19 @@
+#include <iostream>
+using namespace std;
+
+int foo(int n)
+{
+    int number = 1;
+    if(n == 0) return 0;
+    return number *= 2 + foo(n - 1);
+}
+
+int main()
+{
+    int n;
+    cout << "Кол-во чисел = ";
+    cin >> n;
+    
+    cout << foo(n) << "\n";
+    return 0;
+}

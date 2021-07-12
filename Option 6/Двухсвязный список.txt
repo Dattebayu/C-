@@ -1,0 +1,206 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+ 
+using namespace std;
+ 
+ 
+// Создание данных списка
+struct List {
+    char telephone[15], owner[30], talkTime[10], payment[11];
+};
+ 
+// Создание самой ячейки списка 
+struct Subscriber {
+    List *node;
+    Subscriber *next; // Указатель на следующий элемент
+    Subscriber *prev; // Указатель на предыдущий элемент
+};
+
+Subscriber *head = NULL; // Голова списка, самый начальный элемент
+Subscriber *tail = NULL; // Хвост списка, конечный элемент
+
+// Функция создания первого элемента списка 
+Subscriber *createList(List *node) { // Мы передаем в функцию значения отработки функции addKarta, которая сформировала новую структуру, с нужными данными
+    Subscriber *data = new Subscriber; // По средствам структуру Subscriber мы создаем новый обьект(узел), в который заносим данные
+    data->node = node; // Переносим данные, которые мы ввели и преедали из функции addKarta в поле нового обьекта(узла)
+    data->next = NULL; // Так как обьект первый у него нету указателя на следующий элемент, так как и на предыдущий
+    data->prev = NULL;
+    
+    head = data; 
+    tail = data;
+    return data;
+    // На данном этапе у нас 1 элемент, по этому и начало, и конец, равен этому элементу
+}
+
+// Функция добавление элемента списка 
+List *addList() {
+    cout<<"Данные о абонетах:\n";
+    List *node = new List; // Создает по средству структуры List данные, в которые мы заносим введенные переменные
+    
+    cout<<"Введите номер телефона:"; 
+    cin>>node->telephone;
+    
+    cout<<"Введите фамилию и инициалы абонента:"; 
+    cin>>node->owner;
+    
+    cout<<"Введите время разговора:"; 
+    cin>>node->talkTime;
+    
+    cout<<"Введите оплату телефона:"; 
+    cin>>node->payment;
+    return node; // Возвращаем данные
+}
+  
+ 
+// Функция добавления элемента списка 
+void addingData(List *node, Subscriber *data) { // В данную функции мы так же передаем результат работы addKarta
+// и берем из памяти данные, которые мы внесли, которые содержат информацию о нашем списке
+    // Перебор все элементов, пока не дойдем до последнего
+    while(data->next != NULL) {
+        data = data->next; // Переход на следующий элемент
+    }
+    data->next = new Subscriber; // Как только мы нашли последний, то создаем новую структуру, в которую записываем все данные
+    data->next->node = node;
+    data->next->next = NULL;
+    data->next->prev = tail; // Так как у нас больше одного элемента, хвостом становится самый последний
+    tail = data->next;
+}
+ 
+// Функция вывода элементов списка  
+void printData(Subscriber *data) { // Передаем данные о нашем списке
+    while(data != NULL) { // Простой перебор всех элементов пока не дойдем до последнего
+        cout<<"\nНомер телефона: "<<data->node->telephone;
+        cout<<"\nФамилию и инициалы абонента: "<<data->node->owner;
+        cout<<"\nВремя разговора: "<<data->node->talkTime;
+        cout<<"\nОплату телефона: "<<data->node->payment<<"\n";
+        data = data->next; // Переход на следующий элемент
+    }
+}
+
+
+Subscriber* deleteLibrary(Subscriber *book) { // Удаление обьекта(узла) посредством выборки
+    Subscriber *last = book, *data = book;
+    char payment[10]; // Создаем переменную, которая будет содержать данные, по которому будет производиться поиск и удаляться данные
+    
+    cout<<"Введите номер телефона: \n";
+    cin>>payment;
+    
+    while (data) { // Цикл перебора подходящего элемента
+        if (!strcmp(payment, data->node->payment)) { // Проверка на схожесть
+            {
+                data->node = NULL;
+                if(last == data) {
+                    book = data->next;
+                } else {
+                    last->next = data->next;
+                }    
+                delete data;
+                last = data;
+                data = data->next;
+            }
+        }
+        else if (strcmp(payment, data->node->payment))
+            data = data->next;
+    }
+ 
+    cout<<"Запись удалена\n";
+    return book; // Возвращает измененую структуру
+}
+
+int choice() {
+    int answer;
+    cout<<"Сделайте выбор: \n";
+    cout<<"1) Занисение начальных данных\n";
+    cout<<"2) Добавление данных о владельце\n";
+    cout<<"3) Вывод абонентов\n";
+    cout<<"4) Найти абонента и удалить\n";
+    cout<<"5) Очистить список абонентов\n";
+    cout<<"6) Выход из программы\n";
+    cout<<"Введите свой выбор: ";
+    cin>>answer;
+    cout<<"\n";
+    cout<<"\n";
+    if (answer > 0 && answer < 7)
+        return answer;
+    else
+        return 0;
+}
+ 
+int main() {
+    Subscriber *data = NULL; // Создаем структуру
+    int returnChoice, n; // Переменная для выбора 
+    bool close = true;    
+    
+    while(close == true) {
+        returnChoice = choice();
+        
+        if(returnChoice == 1) {
+            cout<<"Сколько абонентов хотите добавить: ";
+            cin>> n;
+            cout<<"\n";
+            cout<<"\n";
+            
+            for(int i = 0; i < n; i++) {
+                if(data == NULL) {
+                    data = createList(addList());                    
+                }
+                else {
+                    addingData(addList(), data);
+                }
+                cout<<"\n";
+                cout<<"\n";
+            }
+        }
+        
+        else if(returnChoice == 2) {
+            cout<<"\n";
+            if(data == NULL) {
+                data = createList(addList());
+            }
+            else {
+                addingData(addList(), data);
+            }
+                
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+        else if(returnChoice == 3) { // Отображение всех записей
+            printData(data);
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+        else if(returnChoice == 4) {
+            data = deleteLibrary(data);
+            cout<<"\n";
+            cout<<"\n";
+        }
+ 
+        else if(returnChoice == 5)
+        {
+            data = NULL; // Удаляет в программе
+            cout<<"Все записи удалены!\n";
+            delete data; // Удаляет в памяти
+            cout<<"\n";
+            cout<<"\n";
+            cout<<"\n";
+            
+        }
+ 
+
+        else if (returnChoice == 6) { // Выход
+            close = false;
+        }
+ 
+        else if(returnChoice < 1 || returnChoice > 6) {
+            cout<<"Ваш выбор не соответствует пунктам меню!\n";
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+    }
+    return 0;
+}

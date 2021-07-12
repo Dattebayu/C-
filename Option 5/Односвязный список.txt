@@ -1,0 +1,180 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <cstring>
+ 
+using namespace std;
+ 
+ 
+// Создание структуру, с нужными полями
+struct Thing {
+    char word[15];
+    char page[40];
+};
+ 
+struct Word {
+    Thing *node; // Посредствам структуру Thing
+    Word *next; // Указатель на следующий элемент
+};
+
+Word *head = NULL; // Голова списка, самый начальный элемент 
+Word *createLibrary(Thing *node) { // Передаем через функцию addKarta node с данными
+    Word *data = new Word; // Создаем 
+    data->node = node;
+    data->next = NULL;
+    head = data;
+    
+    return data;
+}
+ 
+// Функция добавление элемента списка 
+Thing *addLibrary() {
+    int n = 0, i;
+    char bufer[40], str[40];
+    cout<<"данные о указатели:\n";
+    Thing *node = new Thing; // Создает по средству структуры Thing данные, в которые мы заносим введенные переменные
+    cout<<"введите слово, на которое хотите сделать указать, где оно встречается:"; 
+    cin>>node->word;
+    cout<<"Количество страниц на которых встречается данное слово";
+    cin>>n;
+    for (i = 0; i < n; i++) {
+        cout<<"введите страницы, на которых данное слово встречается:";
+        cin>>bufer;
+        strcat(node->page, bufer);
+    };
+    return node; // Возвращаем данные
+}
+ 
+// Функция добавления элемента списка 
+void addingData(Thing *node, Word *data) {
+    while(data->next != NULL) {
+        data = data->next; // Перебераем все элементы списка, пока не найдем последний
+    }
+    data->next=new Word; // Создаем новую структуру 
+    data->next->node=node; // Заносим в нее данные 
+    data->next->next=NULL; // Задаем указатель на след элемент, так как он будет последнйи, то он равняется NULL
+}
+
+Word *deleteLibrary(Word *word) {
+    Word *last = word, *data = word;
+    char comparison[10]; // Переменная для сравнения номера такси
+    
+    cout<<"введите номер указателя: \n";
+    cin>>comparison;
+    
+    while (data) {
+        if (!strcmp(comparison, data->node->word)) { // Сравниванием номер введенного такси с нашей структурой
+            {
+                data->node = NULL; // У этого элемента сразу очищаем данные 
+                if(last == data) { 
+                    word = data->next; // Сохраняем данные о следующем элементе
+                } else {
+                    last->next = data->next; // Заносим в last новый элемент, для дальнейшего сравнения
+                }    
+                delete data; // Удаляем из памяти структуру
+                last = data; // Заносим в last, следующий элемент после удаленного
+                data = data->next; // И в дату эелмент после него, чтобы продолжить проверку 
+            }
+        }
+        else if (strcmp(comparison, data->node->word))
+            data = data->next; // Переходим на следующий
+    }
+    cout<<"Запись удалена\n";
+    return word;
+}
+ 
+// Функция вывода элементов списка  
+void printData(Word *data) { // Передаем данные о нашем списке
+    while(data != NULL) { // Простой перебор всех элементов пока не дойдем до последнего
+        cout<<"\n Слово: "<<data->node->word;
+        cout<<"\n Страницы: "<<data->node->page;
+        data = data->next; // Переход на следующий элемент
+    }
+}
+ 
+int main() {
+    Word *data = NULL; // Создаем структуру
+    int n; // Переменная для выбора 
+    bool close = true;    
+    int answer;
+    
+    while(close == true) {
+        cout<<"Сделайте выбор: \n";
+        cout<<"1. занисение начальных данных\n";
+        cout<<"2. добавление указателя\n";
+        cout<<"3. вывод всех указателей\n";
+        cout<<"4. найти слово и удалить\n";
+        cout<<"5. очистить список указателей\n";
+        cout<<"6. выход\n";
+        cout<<"введите свой выбор: ";
+        cin>>answer;
+        
+        if(answer == 1) {
+            cout<<"Сколько указателей хотите добавить: ";
+            cin>> n;
+            cout<<"\n";
+            cout<<"\n";
+            
+            for(int i = 0; i < n; i++) {
+                if(data == NULL) {
+                    data = createLibrary(addLibrary());                    
+                }
+                else {
+                    addingData(addLibrary(), data);
+                }
+                cout<<"\n";
+                cout<<"\n";
+            }
+        }
+        
+        else if(answer == 2) {
+            cout<<"\n";
+            if(data == NULL) {
+                data = createLibrary(addLibrary());
+            }
+            else {
+                addingData(addLibrary(), data);
+            }
+                
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+        else if(answer == 3) { // Отображение всех записей
+            printData(data);
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+        else if(answer == 4) {
+            data = deleteLibrary(data);
+            cout<<"\n";
+            cout<<"\n";
+        }
+ 
+        else if(answer == 5)
+        {
+            data = NULL; // Удаляет в программе
+            cout<<"Все записи удалены!\n";
+            delete data; // Удаляет в памяти
+            cout<<"\n";
+            cout<<"\n";
+            cout<<"\n";
+            
+        }
+ 
+
+        else if (answer == 6) { // Выход
+            close = false;
+        }
+ 
+        else if(answer < 1 || answer > 6) {
+            cout<<"Ваш выбор не соответствует пунктам\n";
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+    }
+    return 0;
+}

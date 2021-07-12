@@ -1,0 +1,45 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+int **a, n, m, max = 0, min;
+
+cout<<"Введите размер массива nxn:\n";
+cout<<"n: ";
+cin>>n;
+m = n;
+a = new int *[n];
+
+for (int i = 0;i < n; i++) {
+    a[i] = new int [m];
+}
+
+cout<<"Исходные массив\n";
+
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+        a[i][j] = rand()%10+1;
+        cout<<a[i][j]<<" ";
+    }
+    cout<<"\n";
+}
+
+min = a[1][1] + 10;
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+        if (n == i + j + 1) {
+            if (min > a[i][j]) {
+                min = a[i][j];
+            }
+            if (max < a[i][j]) {
+                max = a[i][j];
+            }
+        }
+    
+    }
+}
+cout<<"Сумма максимального и минимального числа побочной диагонали = "<<min + max;
+return 0;
+}

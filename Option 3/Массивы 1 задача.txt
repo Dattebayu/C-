@@ -1,0 +1,58 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int **a, n, m, sum = 0, numMinJ, min;
+    
+    a = new int *[n];
+    
+    for (int i = 0;i < n; i++) {
+    a[i] = new int [m];
+}
+
+cout<<"Введите размер массива nxm:\n";
+cout<<"n: ";
+cin>>n;
+cout<<"m: ";
+cin>>m;
+
+cout<<"Исходные массив\n";
+
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+        a[i][j] = rand()%10;
+        cout<<a[i][j]<<" ";
+    }
+    cout<<"\n";
+}
+min = a[1][1] + 10;
+for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+        if (min > a[i][j]) {
+            min = a[i][j];
+            numMinJ = j;
+        }
+    }
+    for (int j = 0; j < n; j++) {
+        a[i][j] -= numMinJ;
+    }
+    min = a[1][1] + 10;
+}
+
+cout<<"Измененый массив:\n";
+
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+        cout<<a[i][j]<<" ";
+    }
+    cout<<"\n";
+}
+
+return 0;
+}
+
+
+
+

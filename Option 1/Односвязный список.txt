@@ -1,0 +1,186 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+ 
+using namespace std;
+ 
+ 
+// Создание структуру, с нужными полями
+struct Library {
+    char UDCnumber[11], FIO[50], name[30], year[15], numberOfCopies[10];
+};
+ 
+struct Book {
+    Library *node; // Посредствам структуру Library
+    Book *next; // Указатель на следующий элемент
+};
+
+Book *head = NULL; // Голова списка, самый начальный элемент 
+// Функция создания элемента списка 
+Book *createLibrary(Library *node) { // Передаем через функцию addKarta node с данными
+    Book *data = new Book; // Создаем 
+    data->node = node;
+    data->next = NULL;
+    head = data;
+    
+    return data;
+}
+ 
+// Функция добавление элемента списка 
+Library *addLibrary() {
+    cout<<"Данные о книгах:\n";
+    Library *node = new Library; // Создает по средству структуры Library данные, в которые мы заносим введенные переменные
+    cout<<"Введите номер УДК:"; cin>>node->UDCnumber;
+    cout<<"Введите фамилию и инициалы автора:"; cin>>node->FIO;
+    cout<<"Введите название:"; cin>>node->name;
+    cout<<"Введите год издания:"; cin>>node->year;
+    cout<<"Введите количество экземпляров данной книги в библиотеке:"; cin>>node->numberOfCopies;
+    return node; // Возвращаем данные
+}
+ 
+// Функция добавления элемента списка 
+void addingData(Library *node, Book *data) {
+    while(data->next != NULL) {
+        data = data->next; // Перебераем все элементы списка, пока не найдем последний
+    }
+    data->next=new Book; // Создаем новую структуру 
+    data->next->node=node; // Заносим в нее данные 
+    data->next->next=NULL; // Задаем указатель на след элемент, так как он будет последнйи, то он равняется NULL
+}
+ 
+// Функция вывода элементов списка  
+void printData(Book *data) { // Передаем данные о нашем списке
+    while(data != NULL) { // Простой перебор всех элементов пока не дойдем до последнего
+        cout<<"\nНомер УДК: "<<data->node->UDCnumber;
+        cout<<"\nФамилию и инициалы автора: "<<data->node->FIO;
+        cout<<"\nНазвание: "<<data->node->name;
+        cout<<"\nГод издания: "<<data->node->year<<"\n";
+        cout<<"\nКоличество экземпляров данной книги в библиотеке: "<<data->node->numberOfCopies<<"\n";
+        data = data->next; // Переход на следующий элемент
+    }
+}
+
+Book *deleteLibrary(Book *book) {
+    Book *last = book, *data = book;
+    char UDCnumber[10]; // Переменная для сравнения номера такси
+    
+    cout<<"Введите номер книги: \n";
+    cin>>UDCnumber;
+    
+    while (data) {
+        if (!strcmp(UDCnumber, data->node->UDCnumber)) { // Сравниванием номер введенного такси с нашей структурой
+            {
+                data->node = NULL; // У этого элемента сразу очищаем данные 
+                if(last == data) { 
+                    book = data->next; // Сохраняем данные о следующем элементе
+                } else {
+                    last->next = data->next; // Заносим в last новый элемент, для дальнейшего сравнения
+                }    
+                delete data; // Удаляем из памяти структуру
+                last = data; // Заносим в last, следующий элемент после удаленного
+                data = data->next; // И в дату эелмент после него, чтобы продолжить проверку 
+            }
+        }
+        else if (strcmp(UDCnumber, data->node->UDCnumber))
+            data = data->next; // Переходим на следующий
+    }
+    cout<<"Запись удалена\n";
+    return book;
+}
+
+int choice() {
+    int answer;
+    cout<<"Сделайте выбор: \n";
+    cout<<"1) Занисение начальных данных\n";
+    cout<<"2) Добавление книги\n";
+    cout<<"3) Вывод всех книг\n";
+    cout<<"4) Найти книги и удалить\n";
+    cout<<"5) Очистить список книг\n";
+    cout<<"6) Выход из программы\n";
+    cout<<"Введите свой выбор: ";
+    cin>>answer;
+    cout<<"\n";
+    cout<<"\n";
+    if (answer > 0 && answer < 7)
+        return answer;
+    else
+        return 0;
+}
+ 
+int main() {
+    Book *data = NULL; // Создаем структуру
+    int returnChoice, n; // Переменная для выбора 
+    bool close = true;    
+    
+    while(close == true) {
+        returnChoice = choice();
+        
+        if(returnChoice == 1) {
+            cout<<"Сколько книг хотите добавить: ";
+            cin>> n;
+            cout<<"\n";
+            cout<<"\n";
+            
+            for(int i = 0; i < n; i++) {
+                if(data == NULL) {
+                    data = createLibrary(addLibrary());                    
+                }
+                else {
+                    addingData(addLibrary(), data);
+                }
+                cout<<"\n";
+                cout<<"\n";
+            }
+        }
+        
+        else if(returnChoice == 2) {
+            cout<<"\n";
+            if(data == NULL) {
+                data = createLibrary(addLibrary());
+            }
+            else {
+                addingData(addLibrary(), data);
+            }
+                
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+        else if(returnChoice == 3) { // Отображение всех записей
+            printData(data);
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+        else if(returnChoice == 4) {
+            data = deleteLibrary(data);
+            cout<<"\n";
+            cout<<"\n";
+        }
+ 
+        else if(returnChoice == 5)
+        {
+            data = NULL; // Удаляет в программе
+            cout<<"Все записи удалены!\n";
+            delete data; // Удаляет в памяти
+            cout<<"\n";
+            cout<<"\n";
+            cout<<"\n";
+            
+        }
+ 
+
+        else if (returnChoice == 6) { // Выход
+            close = false;
+        }
+ 
+        else if(returnChoice < 1 || returnChoice > 6) {
+            cout<<"Ваш выбор не соответствует пунктам меню!\n";
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+    }
+    return 0;
+}

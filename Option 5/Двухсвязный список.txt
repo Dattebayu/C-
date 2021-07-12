@@ -1,0 +1,193 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+ 
+using namespace std;
+ 
+ 
+// Создание данных списка
+struct Thing {
+    char word[15];
+    char page[40];
+};
+ 
+// Создание самой ячейки списка 
+struct Word {
+    Thing *node;
+    Word *next; // Указатель на следующий элемент
+    Word *prev; // Указатель на предыдущий элемент
+};
+
+Word *head = NULL; // Голова списка, самый начальный элемент
+Word *tail = NULL; // Хвост списка, конечный элемент
+
+// Функция создания первого элемента списка 
+Word *createThing(Thing *node) { // Мы передаем в функцию значения отработки функции addKarta, которая сформировала новую структуру, с нужными данными
+    Word *data = new Word; // По средствам структуру Word мы создаем новый обьект(узел), в который заносим данные
+    data->node = node; // Переносим данные, которые мы ввели и преедали из функции addKarta в поле нового обьекта(узла)
+    data->next = NULL; // Так как обьект первый у него нету указателя на следующий элемент, так как и на предыдущий
+    data->prev = NULL;
+    
+    head = data; 
+    tail = data;
+    return data;
+    // На данном этапе у нас 1 элемент, по этому и начало, и конец, равен этому элементу
+}
+
+// Функция добавление элемента списка 
+Thing *addThing() {
+    int n = 0, i;
+    char bufer[40], str[40];
+    cout<<"данные о указатели:\n";
+    Thing *node = new Thing; // Создает по средству структуры Thing данные, в которые мы заносим введенные переменные
+    cout<<"введите слово, на которое хотите сделать указать, где оно встречается:"; 
+    cin>>node->word;
+    cout<<"Количество страниц на которых встречается данное слово";
+    cin>>n;
+    for (i = 0; i < n; i++) {
+        cout<<"введите страницы, на которых данное слово встречается:";
+        cin>>bufer;
+        strcat(node->page, bufer);
+    };
+    return node; // Возвращаем данные
+}
+  
+ 
+// Функция добавления элемента списка 
+void addingData(Thing *node, Word *data) { // В данную функции мы так же передаем результат работы addKarta
+// и берем из памяти данные, которые мы внесли, которые содержат информацию о нашем списке
+    // Перебор все элементов, пока не дойдем до последнего
+    while(data->next != NULL) {
+        data = data->next; // Переход на следующий элемент
+    }
+    data->next = new Word; // Как только мы нашли последний, то создаем новую структуру, в которую записываем все данные
+    data->next->node = node;
+    data->next->next = NULL;
+    data->next->prev = tail; // Так как у нас больше одного элемента, хвостом становится самый последний
+    tail = data->next;
+}
+ 
+// Функция вывода элементов списка  
+void printData(Word *data) { // Передаем данные о нашем списке
+    while(data != NULL) { // Простой перебор всех элементов пока не дойдем до последнего
+        cout<<"\n Слово: "<<data->node->word;
+        cout<<"\n Страницы: "<<data->node->page;
+        data = data->next; // Переход на следующий элемент
+    }
+}
+
+Word* deleteThing(Word *word) { // Удаление обьекта(узла) посредством выборки
+    Word *last = word, *data = word;
+    char comparison[10]; // Создаем переменную, которая будет содержать данные, по которому будет производиться поиск и удаляться данные
+    
+    cout<<"Введите номер книги: \n";
+    cin>>comparison;
+    
+    while (data) { // Цикл перебора подходящего элемента
+        if (!strcmp(comparison, data->node->word)) { // Проверка на схожесть
+            {
+                data->node = NULL;
+                if(last == data) {
+                    word = data->next;
+                } else {
+                    last->next = data->next;
+                }    
+                delete data;
+                last = data;
+                data = data->next;
+            }
+        }
+        else if (strcmp(comparison, data->node->word))
+            data = data->next;
+    }
+ 
+    cout<<"Запись удалена\n";
+    return word; // Возвращает измененую структуру
+}
+ 
+int main() {
+    Word *data = NULL; // Создаем структуру
+    int returnChoice, n; // Переменная для выбора 
+    bool close = true; 
+    int answer;
+    
+    while(close == true) {
+        cout<<"Сделайте выбор: \n";
+        cout<<"1. занисение начальных данных\n";
+        cout<<"2. добавление указателя\n";
+        cout<<"3. вывод всех указателей\n";
+        cout<<"4. найти слово и удалить\n";
+        cout<<"5. очистить список указателей\n";
+        cout<<"6. выход\n";
+        cout<<"введите свой выбор: ";
+        cin>>answer;
+        
+        if(answer == 1) {
+            cout<<"Сколько указателей хотите добавить: ";
+            cin>> n;
+            cout<<"\n";
+            cout<<"\n";
+            
+            for(int i = 0; i < n; i++) {
+                if(data == NULL) {
+                    data = createThing(addThing());                    
+                }
+                else {
+                    addingData(addThing(), data);
+                }
+                cout<<"\n";
+                cout<<"\n";
+            }
+        }
+        
+        else if(answer == 2) {
+            cout<<"\n";
+            if(data == NULL) {
+                data = createThing(addThing());
+            }
+            else {
+                addingData(addThing(), data);
+            }
+                
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+        else if(answer == 3) { // Отображение всех записей
+            printData(data);
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+        else if(answer == 4) {
+            data = deleteThing(data);
+            cout<<"\n";
+            cout<<"\n";
+        }
+ 
+        else if(answer == 5)
+        {
+            data = NULL; // Удаляет в программе
+            cout<<"Все записи удалены!\n";
+            delete data; // Удаляет в памяти
+            cout<<"\n";
+            cout<<"\n";
+            cout<<"\n";
+            
+        }
+ 
+
+        else if (answer == 6) { // Выход
+            close = false;
+        }
+ 
+        else if(answer < 1 || answer > 6) {
+            cout<<"Ваш выбор не соответствует пунктам\n";
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+    }
+    return 0;
+}

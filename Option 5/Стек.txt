@@ -1,0 +1,135 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stack>
+ 
+using namespace std;
+ 
+ 
+// Создание данных списка
+struct Thing {
+    char word[15];
+    char page[40];
+};
+ 
+// Создание самой ячейки списка 
+struct Word {
+    Thing *node;
+    Word *next; // Указатель на следующий элемент
+};
+
+Word *head = NULL; // Голова списка, самый начальный элемент
+
+// Функция создания первого элемента списка 
+Word *createThing(Thing *node) { // Мы передаем в функцию значения отработки функции addKarta, которая сформировала новую структуру, с нужными данными
+    Word* data = new Word; // По средствам структуру Word мы создаем новый обьект(узел), в который заносим данные
+    data->node = node; // Переносим данные, которые мы ввели и преедали из функции addKarta в поле нового обьекта(узла)
+    data->next = head; // В указатель заносим данные о самом верхнем обьекте
+    
+    head = data; // Переназначаем верхний обьект 
+    return data;
+}
+
+// Функция добавление элемента списка 
+Thing *addThing() {
+    int n = 0, i;
+    char bufer[40], str[40];
+    cout<<"данные о указатели:\n";
+    Thing *node = new Thing; // Создает по средству структуры Thing данные, в которые мы заносим введенные переменные
+    cout<<"введите слово, на которое хотите сделать указать, где оно встречается:"; 
+    cin>>node->word;
+    cout<<"Количество страниц на которых встречается данное слово";
+    cin>>n;
+    for (i = 0; i < n; i++) {
+        cout<<"введите страницы, на которых данное слово встречается:";
+        cin>>bufer;
+        strcat(node->page, bufer);
+    };
+    return node; // Возвращаем данные
+}
+ 
+void printData() { // Передаем данные о нашем списке
+    Word *data = head;
+    while(data != NULL) { // Простой перебор всех элементов пока не дойдем до последнего
+        cout<<"\n Слово: "<<data->node->word;
+        cout<<"\n Страницы: "<<data->node->page;
+        data = data->next; // Переход на следующий элемент
+    }
+}
+
+void deleteThing() { // Удаление обьекта(узла), самого верхнего
+    if (head == NULL) return; // Если нету элемента, прекращает работу функции
+    Word* data = head->next;
+    
+    cout<<"Запись удалена \n";
+    
+    delete head;
+    head = data; // Переназначаем верхний обьект 
+}
+ 
+int main() {
+    Word *data = NULL; // Создаем структуру
+    int returnChoice, n; // Переменная для выбора 
+    bool close = true;  
+    int answer;
+    
+    while(close == true) {
+        cout<<"Сделайте выбор: \n";
+        cout<<"1. добавление указателя\n";
+        cout<<"2. вывод всех указателей\n";
+        cout<<"3. найти слово и удалить\n";
+        cout<<"4. очистить список указателей\n";
+        cout<<"5. выход\n";
+        cout<<"введите свой выбор: ";
+        cin>>answer;
+        
+        if(answer == 1) {
+            cout<<"Сколько указателей хотите добавить: ";
+            cin>> n;
+            cout<<"\n";
+            cout<<"\n";
+            
+            for(int i = 0; i < n; i++) {
+                data = createThing(addThing());                    
+                cout<<"\n";
+                cout<<"\n";
+            }
+        }
+        
+        else if(answer == 2) { // Отображение всех записей
+            printData();
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+        else if(answer == 3)
+        {
+            deleteThing();
+            cout<<"\n";
+            cout<<"\n";
+        }
+ 
+        else if(answer == 4)
+        {
+            for (int i = 0; i < n + 2; i++) {
+               deleteThing(); // Удаляет все элементы, засчет цикла
+            }
+            cout<<"\n";
+            cout<<"\n";
+        }
+ 
+
+        else if (answer == 5) { // Выход
+            close = false;
+        }
+ 
+        else if(answer < 1 || answer > 5) {
+            cout<<"Ваш выбор не соответствует пунктам\n";
+            cout<<"\n";
+            cout<<"\n";
+        }
+        
+    }
+    return 0;
+}
